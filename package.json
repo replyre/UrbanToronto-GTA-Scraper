@@ -1,0 +1,19 @@
+{
+  "name": "urban-toronto-scraper",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "scrape:paths": "node scrape_project_paths.js",
+    "scrape:details": "node scrape_project_details.js",
+    "filter:gta:180": "node filter_gta_projects.js",
+    "mark:gta:priority": "node mark_high_priority_gta.js",
+    "xlsx:gta": "node make_gta_xlsx.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "node-fetch": "^3.3.2",
+    "puppeteer": "^22.0.0",
+    "exceljs": "^4.4.0"
+  }
+}
+
