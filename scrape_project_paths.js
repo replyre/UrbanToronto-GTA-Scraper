@@ -15,6 +15,16 @@ const ALLOWED_STATUSES = [
   "Pre-Construction"
 ];
 
+// Optional: stop after collecting this many paths (for sample / smoke runs).
+// Pass `--limit=50` on the command line, e.g.
+//   node scrape_project_paths.js --limit=50
+function parseLimitArg() {
+  const arg = process.argv.slice(2).find((a) => a.startsWith("--limit="));
+  if (!arg) return null;
+  const n = Number(arg.split("=")[1]);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
 // Build the form body with the exact payload structure
 function buildFormBody(start) {
   const timestamp = Date.now();
@@ -148,7 +158,13 @@ function findLastBatchFile() {
 async function main() {
   console.log("Starting UrbanToronto project path scraper...");
   console.log(`Filtering by statuses: ${ALLOWED_STATUSES.join(", ")}`);
-  console.log(`Storing ${BATCH_SIZE} paths per file\n`);
+  console.log(`Storing ${BATCH_SIZE} paths per file`);
+
+  const pathLimit = parseLimitArg();
+  if (pathLimit) {
+    console.log(`Limit applied: stopping after ${pathLimit} matching paths`);
+  }
+  console.log("");
 
   // Check for existing batch files to resume
   const resumeInfo = findLastBatchFile();
@@ -218,6 +234,7 @@ async function main() {
     console.log(`   Filtered to ${filteredPaths.length} paths matching status criteria`);
 
     // Add to current batch
+    let limitReached = false;
     for (const projectPath of filteredPaths) {
       currentBatch.push(projectPath);
       allPaths.push(projectPath);
@@ -229,6 +246,20 @@ async function main() {
         currentBatch = [];
         batchFileNumber++;
       }
+
+      if (pathLimit && allPaths.length >= pathLimit) {
+        limitReached = true;
+        break;
+      }
+    }
+
+    if (limitReached) {
+      console.log(`\n✓ Reached --limit=${pathLimit}; stopping early.`);
+      if (currentBatch.length > 0) {
+        const filepath = saveBatchFile(batchFileNumber, currentBatch);
+        console.log(`✓ Saved final batch ${batchFileNumber} with ${currentBatch.length} paths to ${filepath}`);
+      }
+      break;
     }
 
     // Check if we should continue

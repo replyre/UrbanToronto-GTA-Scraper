@@ -4,10 +4,13 @@
   "type": "module",
   "scripts": {
     "scrape:paths": "node scrape_project_paths.js",
+    "scrape:paths:sample": "node scrape_project_paths.js --limit=40",
     "scrape:details": "node scrape_project_details.js",
+    "scrape:details:sample": "node scrape_project_details.js --limit=25",
     "filter:gta:180": "node filter_gta_projects.js",
     "mark:gta:priority": "node mark_high_priority_gta.js",
-    "xlsx:gta": "node make_gta_xlsx.js"
+    "xlsx:gta": "node make_gta_xlsx.js",
+    "sample": "npm run scrape:paths:sample && npm run scrape:details:sample && npm run filter:gta:180 && npm run mark:gta:priority && npm run xlsx:gta"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",

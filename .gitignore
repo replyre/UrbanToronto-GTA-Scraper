@@ -29,6 +29,9 @@ yarn-error.log*
 # Claude Code local settings
 .claude/
 
+# Internal / private working docs (not for public repo)
+MARKETING.md
+
 # OS
 .DS_Store
 Thumbs.db

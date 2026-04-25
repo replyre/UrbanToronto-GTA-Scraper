@@ -9,6 +9,16 @@ const SKIPPED_LOG = path.resolve("project_details_skipped.log");
 const DELAY_BETWEEN_REQUESTS = 2000; // 2 seconds
 const PAGE_LOAD_TIMEOUT = 60000; // 60 seconds
 
+// Optional: limit how many URLs are scraped (for sample / smoke runs).
+// Pass `--limit=20` on the command line, e.g.
+//   node scrape_project_details.js --limit=20
+function parseLimitArg() {
+  const arg = process.argv.slice(2).find((a) => a.startsWith("--limit="));
+  if (!arg) return null;
+  const n = Number(arg.split("=")[1]);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // High priority keywords to check in description
@@ -343,8 +353,16 @@ async function main() {
   console.log("Marking high priority projects based on description keywords\n");
 
   // Read all project URLs from batch files
-  const urls = readAllProjectUrls();
-  console.log(`Found ${urls.length} project URLs from batch files\n`);
+  let urls = readAllProjectUrls();
+  console.log(`Found ${urls.length} project URLs from batch files`);
+
+  // Apply --limit=N if provided
+  const limit = parseLimitArg();
+  if (limit && urls.length > limit) {
+    urls = urls.slice(0, limit);
+    console.log(`Limit applied: scraping first ${urls.length} URLs only`);
+  }
+  console.log("");
 
   if (urls.length === 0) {
     console.log("No project URLs found. Make sure batch files exist.");
