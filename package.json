@@ -17,6 +17,9 @@
     "node-fetch": "^3.3.2",
     "puppeteer": "^22.0.0",
     "exceljs": "^4.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
 

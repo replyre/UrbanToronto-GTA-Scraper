@@ -1,8 +1,33 @@
 # UrbanToronto GTA Scraper
 
+> Turn UrbanToronto.ca's public project database into a curated, color-coded Excel sheet of upcoming Toronto high-rises — with the architect, developer, and address for every lead, and the priority firms automatically flagged.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Built with Puppeteer](https://img.shields.io/badge/built%20with-Puppeteer-40B5A4?logo=puppeteer&logoColor=white)](https://pptr.dev/)
+[![Built with Cheerio](https://img.shields.io/badge/parsed%20with-Cheerio-E88C1F)](https://cheerio.js.org/)
+
+![Sample output](docs/screenshots/output.png)
+
 A 5-step Node.js pipeline that scrapes [UrbanToronto.ca](https://urbantoronto.ca/database/projects)'s project database and produces a curated, formatted Excel workbook of **Pre-Construction projects in the Greater Toronto Area**, with high-priority leads flagged.
 
 Built as a lead-generation tool for facade / glazing / curtain-wall contractors looking to identify upcoming high-rise developments and the architecture firms behind them.
+
+## Quickstart
+
+```bash
+git clone https://github.com/replyre/UrbanToronto-GTA-Scraper.git
+cd UrbanToronto-GTA-Scraper
+npm install
+
+# Fast end-to-end demo (~5 min, ~25 projects)
+npm run sample
+
+# Full pipeline (~45–60 min, ~800 projects → top 180 GTA leads)
+npm run scrape:paths && npm run scrape:details && npm run filter:gta:180 && npm run mark:gta:priority && npm run xlsx:gta
+```
+
+The final deliverable lands at `project_details_gta_180.xlsx`. A pre-generated sample lives at [`samples/project_details_gta_sample.xlsx`](samples/project_details_gta_sample.xlsx) if you'd rather just see what the output looks like.
 
 ---
 
@@ -49,6 +74,21 @@ npm run scrape:paths && npm run scrape:details && npm run filter:gta:180 && npm 
 ```
 
 The final deliverable is **`project_details_gta_180.xlsx`**.
+
+### Sample / demo run *(~5 min)*
+
+For a quick smoke test or to regenerate the screenshot above without scraping all 800 projects:
+
+```bash
+npm run sample
+```
+
+This chains the same 5 stages but caps step 1 at 40 paths and step 2 at 25 page visits. Both `--limit=N` flags also work directly on the underlying scripts:
+
+```bash
+node scrape_project_paths.js --limit=40
+node scrape_project_details.js --limit=25
+```
 
 ### Resume / partial runs
 
@@ -143,6 +183,13 @@ The `.xlsx` adds:
 
 ### Shared config
 - `high_priority_architects.js` — the priority architect list + `isHighPriorityArchitect()` helper, imported by steps 4 and 5
+
+### Repo files
+- `LICENSE` — MIT
+- `samples/project_details_gta_sample.xlsx` — pre-generated demo output (small subset)
+- `samples/project_details_gta_sample.csv` — same data as raw CSV
+- `docs/screenshots/output.png` — the screenshot embedded above
+- `scripts/generate_screenshot.js` — internal helper that re-renders the screenshot from a fresh `.xlsx`
 
 ### Generated at runtime *(not in git, recreated by the pipeline)*
 - `project_paths_batch_NNNN.txt` — paginated URL lists from step 1

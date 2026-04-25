@@ -287,7 +287,11 @@ async function scrapeProjectWithPuppeteer(page, url) {
         $("title").first().text().trim() ||
         url;
     }
-    const name = (projectName || "").replace(/\s+/g, " ");
+    // Strip the " | UrbanToronto" suffix that <title> / og:title leaves on the name.
+    const name = (projectName || "")
+      .replace(/\s*\|\s*UrbanToronto.*$/i, "")
+      .replace(/\s+/g, " ")
+      .trim();
 
     // Extract Construction Status
     const status = extractProjectDetailByHeading($, "Construction Status") || "";
