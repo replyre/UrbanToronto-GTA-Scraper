@@ -8,7 +8,7 @@
 [![Built with Cheerio](https://img.shields.io/badge/parsed%20with-Cheerio-E88C1F)](https://cheerio.js.org/)
 
 ![Sample output](docs/screenshots/output.png)
- ![30-second demo](docs/demo.gif)
+![30-second demo](docs/demo.gif)
 
 A 5-step Node.js pipeline that scrapes [UrbanToronto.ca](https://urbantoronto.ca/database/projects)'s project database and produces a curated, formatted Excel workbook of **Pre-Construction projects in the Greater Toronto Area**, with high-priority leads flagged.
 
